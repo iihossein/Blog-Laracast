@@ -1,0 +1,19 @@
+body {
+    background-color: rgb(210, 225, 237);
+    color: #2c2c2c;
+    max-width: 40rem;
+    margin: auto;
+    font-family: sans-serif;
+}
+p {
+    line-height: 1.6;
+}
+article + article {
+    margin-top: 3rem;
+    /* border-top: 1px #949393 solid; */
+}
+a{
+    color: #2c2c2c;
+    text-decoration: none;
+    /* all: unset; */
+}
