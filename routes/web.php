@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Constraint\FileExists;
+use App\Models\Post;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
+use Illuminate\Support\Facades\File;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,23 +18,43 @@ use PHPUnit\Framework\Constraint\FileExists;
 */
 
 Route::get('/', function () {
-    return view('posts');
+
+
+
+
+    //     $files = File::files(resource_path("posts"));
+
+    //   $posts = collect($files)
+    //     ->map(function($file){
+    //         $document = YamlFrontMatter::parsefile($file);
+    //         return new Post(
+    //             $document->title,
+    //             $document->excerpt,
+    //             $document->date,
+    //             $document->body(),
+    //             $document->slug
+    //         );
+    //     });
+
+    // $posts = array_map(function ($file) {
+    //     $document = YamlFrontMatter::parsefile($file);
+    //     return new Post(
+    //         $document->title,
+    //         $document->excerpt,
+    //         $document->date,
+    //         $document->body(),
+    //         $document->slug
+    //     );
+    // }, $files);
+
+
+    return view('posts', [
+        'posts' => Post::all()
+    ]);
 });
 Route::get('posts/{post}', function ($slug) {
-    $path = __DIR__ . "/../resources/posts/{$slug}.html";
-    if (!file_exists($path)) {
-        // dd("file is not exists");
-        // ddd("file is not exists");
-        // return redirect('/');
-        abort(404);
-    }
-    $post = cache()->remember("posts.{$slug}", 3, fn () => file_get_contents($path));
-    // $post = cache()->remember("posts.{$slug}", 3, function () use ($path) {
-    //     echo 'file_get_contents';
-    //     return file_get_contents($path);
-    // });
+    // find a post by slug and pass it to a view called "post"
     return view('post', [
-        'post' => $post
+        'post' => Post::find($slug)
     ]);
 })->where('post', '[A-z_/-]+');
-// ->whereAlpha('post');
