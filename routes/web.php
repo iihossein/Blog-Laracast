@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Constraint\FileExists;
 use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Facades\Facade;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 use Illuminate\Support\Facades\File;
 
@@ -18,43 +21,32 @@ use Illuminate\Support\Facades\File;
 */
 
 Route::get('/', function () {
+// \Illuminate\Support\Facades\DB::listen(function($query){
+//     // \Illuminate\Support\Facades\Log::info("foo");
+//     logger($query->sql);
+// });
 
 
 
-
-    //     $files = File::files(resource_path("posts"));
-
-    //   $posts = collect($files)
-    //     ->map(function($file){
-    //         $document = YamlFrontMatter::parsefile($file);
-    //         return new Post(
-    //             $document->title,
-    //             $document->excerpt,
-    //             $document->date,
-    //             $document->body(),
-    //             $document->slug
-    //         );
-    //     });
-
-    // $posts = array_map(function ($file) {
-    //     $document = YamlFrontMatter::parsefile($file);
-    //     return new Post(
-    //         $document->title,
-    //         $document->excerpt,
-    //         $document->date,
-    //         $document->body(),
-    //         $document->slug
-    //     );
-    // }, $files);
 
 
     return view('posts', [
-        'posts' => Post::all()
+        'posts' => Post::latest()->with(['category' , 'author'])->get()
     ]);
 });
-Route::get('posts/{post}', function ($slug) {
+Route::get('posts/{post:slug}', function (Post $post) { // Post::where(slug == $post)->firstOrFail();
     // find a post by slug and pass it to a view called "post"
     return view('post', [
-        'post' => Post::findOrFail($slug)
+        'post' => $post
+    ]);
+});
+Route::get('categories/{category:slug}', function (Category $category) {
+    return view('posts', [
+        'posts' => $category->posts->load(['category','author'])
+    ]);
+});
+Route::get('authors/{author:username}', function (User $author) {
+    return view('posts', [
+        'posts' => $author->posts->load(['category','author'])
     ]);
 });
