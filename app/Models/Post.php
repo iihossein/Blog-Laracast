@@ -13,7 +13,7 @@ class Post extends Model
     //     return 'slug';
     // }
 
-    // protected $with = ['category','author']    // take evry time ween call the post
+    protected $with = ['category','author'];    // take evry time ween call the post
 
     public function category(){
         return $this->belongsTo(Category::class);
